@@ -1,3 +1,5 @@
+// @ts-check
+
 import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2/promise'; // プロミスベースの MySQL クライアント
@@ -44,27 +46,6 @@ app.get('/api/data', async (req, res) => {
   } catch (error) {
     console.error('データ取得エラー:', error);
     res.status(500).json({ message: 'データ取得に失敗しました', error: error.message });
-  }
-});
-
-// データ挿入用のAPI例
-app.post('/api/data', async (req, res) => {
-  const { name, created_at } = req.body; // フロントエンドから送られるデータを取得
-
-  if (!name || !created_at) {
-    return res.status(400).json({ message: 'リクエストに名前と作成日が必要です' });
-  }
-
-  try {
-    // データベースにデータを挿入
-    const [result] = await pool.query(
-      'INSERT INTO yoshinaga (name, created_at) VALUES (?, ?)',
-      [name, created_at],
-    );
-    res.status(201).json({ message: 'データを追加しました', insertedId: result.insertId });
-  } catch (error) {
-    console.error('データ挿入エラー:', error);
-    res.status(500).json({ message: 'データ挿入に失敗しました', error: error.message });
   }
 });
 
