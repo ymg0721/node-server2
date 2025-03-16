@@ -1,15 +1,14 @@
 {
     "compilerOptions": {
       "checkJs": true,
-      "allowJs": true
+      "allowJs": true,
+      "noEmit": true,
+      "esModuleInterop": true
     },
-    "include": [
-      "src/**/*.ts"  // TypeScript ファイルのみを対象にする
-    ],
+    "include": ["src/**/*.js"],
     "exclude": [
       "node_modules",
-      "dist",
-      "src/**/*.js"  // JavaScript ファイルを除外
+      "dist"
     ]
-  }
+}
   
