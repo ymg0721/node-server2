@@ -11,13 +11,15 @@ dotenv.config();
 const app = express();
 const port = 8000;
 
+const domain = 'https://node-server2-rosy.vercel.app'
+
 // JSONリクエストを解析
 app.use(express.json());
 
 // CORSを有効化
 app.use(
   cors({
-    origin: 'http://localhost:3000', // フロントエンドのURL
+    origin: domain, // フロントエンドのURL
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // 許可するHTTPメソッド
     allowedHeaders: ['Content-Type'], // 許可するヘッダー
   }),
