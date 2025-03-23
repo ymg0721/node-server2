@@ -5,13 +5,18 @@ import nodemailer from "nodemailer";
 import cors from "cors";
 import dotenv from "dotenv";
 
-// .envの読み込み
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+// ★ CORS 設定：明示的にオリジンを指定！
+app.use(cors({
+  origin: 'https://salone-new-flower.vercel.app',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+}));
+
 app.use(express.json());
 
 app.post("/send-email", async (req, res) => {
@@ -28,7 +33,6 @@ app.post("/send-email", async (req, res) => {
   const mailOptions = {
     from: email,
     to: process.env.RECEIVER_EMAIL,
-    // 件名↓
     subject: `${name}`,
     text: message,
   };
