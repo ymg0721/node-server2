@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // ★ CORS 設定：明示的にオリジンを指定！
-app.use(cors({
+app.options("/send-email", cors({
   origin: 'https://salone-new-flower.vercel.app',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
