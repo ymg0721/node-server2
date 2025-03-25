@@ -1,5 +1,3 @@
-// @ts-check
-
 import express from "express";
 import nodemailer from "nodemailer";
 import cors from "cors";
@@ -10,14 +8,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ✅ CORS 設定をここで明示的に適用
+// ✅ CORS を全体に適用（これが必要！！）
 const corsOptions = {
   origin: 'https://salone-new-flower.vercel.app',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
 };
-app.use(cors(corsOptions)); // ←これが抜けてました！
-app.options("*", cors(corsOptions)); // OPTIONSにも対応
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // ← プリフライトにも対応
 
 app.use(express.json());
 
