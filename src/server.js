@@ -27,9 +27,8 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-
+console.log('呼ばれた')
 app.post("/send-email", async (req, res) => {
-  console.log('呼ばれた')
   const { name, email, message } = req.body;
 
   const transporter = nodemailer.createTransport({
