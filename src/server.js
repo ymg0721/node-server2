@@ -10,25 +10,19 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ★ CORS 設定：明示的にオリジンを指定！
-// これを追加！全てのOPTIONSリクエストにCORS対応
-app.options("*", cors({
+// ✅ CORS 設定をここで明示的に適用
+const corsOptions = {
   origin: 'https://salone-new-flower.vercel.app',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
-}));
-
-// 念のため、app.use() のあとに fallback 的に明示ヘッダー追加
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://salone-new-flower.vercel.app");
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
+};
+app.use(cors(corsOptions)); // ←これが抜けてました！
+app.options("*", cors(corsOptions)); // OPTIONSにも対応
 
 app.use(express.json());
-console.log('呼ばれた')
+
 app.post("/send-email", async (req, res) => {
+  console.log('呼ばれた');
   const { name, email, message } = req.body;
 
   const transporter = nodemailer.createTransport({
