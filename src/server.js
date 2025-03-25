@@ -1,8 +1,6 @@
-// @ts-check
-
 import express from "express";
+import cors from "cors";
 import nodemailer from "nodemailer";
-// import cors from "cors";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -10,21 +8,20 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ✅ CORS を全体に適用（これが必要！！）
+// ✅ CORS設定（ローカル用）ここが重要！
 const corsOptions = {
-  origin: 'https://salone-new-flower.vercel.app',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
+  origin: "https://salone-new-flower.vercel.app/", // フロントの開発URL
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
 };
-// コメントアウトしてみる
-// app.use(cors(corsOptions));
-// app.options("*", cors(corsOptions));
 
+app.use(cors(corsOptions)); // ← これでCORSが通る
+app.options("*", cors(corsOptions)); // ← プリフライトにも対応
 
 app.use(express.json());
 
 app.post("/send-email", async (req, res) => {
-  console.log('呼ばれた');
+  console.log("呼ばれた");
   const { name, email, message } = req.body;
 
   const transporter = nodemailer.createTransport({
