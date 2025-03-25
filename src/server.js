@@ -2,7 +2,7 @@
 
 import express from "express";
 import nodemailer from "nodemailer";
-import cors from "cors";
+// import cors from "cors";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -16,8 +16,10 @@ const corsOptions = {
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
 };
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // ← プリフライトにも対応
+// コメントアウトしてみる
+// app.use(cors(corsOptions));
+// app.options("*", cors(corsOptions));
+
 
 app.use(express.json());
 
