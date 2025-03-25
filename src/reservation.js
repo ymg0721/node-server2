@@ -11,7 +11,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+const corsOptions = {
+  origin: "https://salone-new-flower.vercel.app", // フロントの開発URL
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+};
+
+app.use(cors(corsOptions)); // CORS設定を追加
+app.options("*", cors(corsOptions)); // プリフライトにも対応
 app.use(express.json());
 
 app.post("/send-reservation", async (req, res) => {
