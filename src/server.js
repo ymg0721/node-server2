@@ -34,8 +34,23 @@ app.post("/send-email", async (req, res) => {
   const mailOptions = {
     from: email,
     to: process.env.RECEIVER_EMAIL,
-    subject: `${name}`,
-    text: message,
+    subject: `${name}様からのお問い合わせ`,
+    text: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+　お問い合わせ内容
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+■ お名前
+${name}
+
+■ メールアドレス
+${email}
+
+■ お問い合わせ内容
+${message}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`,
   };
 
   try {
