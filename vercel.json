@@ -34,6 +34,15 @@
       "dest": "src/reservation.js"
     },
     {
+      "src": "/create-checkout-session",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
+      "dest": "src/ec.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "src/ec.js",
       "methods": ["GET", "POST", "OPTIONS"],
