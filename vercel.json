@@ -16,25 +16,19 @@
   ],
   "routes": [
     {
-      "src": "/send-email",
+      "src": "/create-checkout-session",
+      "methods": ["OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type, sec-ch-ua, sec-ch-ua-mobile, sec-ch-ua-platform, User-Agent, Referer, stripe-signature",
+        "Access-Control-Allow-Credentials": "true"
       },
-      "dest": "src/server.js"
-    },
-    {
-      "src": "/send-reservation",
-      "headers": {
-        "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-      },
-      "dest": "src/reservation.js"
+      "status": 204
     },
     {
       "src": "/create-checkout-session",
+      "methods": ["POST"],
       "headers": {
         "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -45,14 +39,25 @@
     },
     {
       "src": "/(.*)",
-      "dest": "src/ec.js",
-      "methods": ["GET", "POST", "OPTIONS"],
+      "methods": ["OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, sec-ch-ua, sec-ch-ua-mobile, sec-ch-ua-platform, User-Agent, Referer, stripe-signature",
         "Access-Control-Allow-Credentials": "true"
-      }
+      },
+      "status": 204
+    },
+    {
+      "src": "/(.*)",
+      "methods": ["GET", "POST"],
+      "headers": {
+        "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, sec-ch-ua, sec-ch-ua-mobile, sec-ch-ua-platform, User-Agent, Referer, stripe-signature",
+        "Access-Control-Allow-Credentials": "true"
+      },
+      "dest": "src/ec.js"
     }
   ]
 }

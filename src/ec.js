@@ -10,25 +10,38 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // CORS設定
-const corsOptions = {
-  origin: "https://salone-new-flower.vercel.app", // フロントの開発URL
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "sec-ch-ua",
-    "sec-ch-ua-mobile",
-    "sec-ch-ua-platform",
-    "User-Agent",
-    "Referer",
-    "stripe-signature",
-  ],
-  credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-};
+app.use(
+  cors({
+    origin: "https://salone-new-flower.vercel.app",
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "sec-ch-ua",
+      "sec-ch-ua-mobile",
+      "sec-ch-ua-platform",
+      "User-Agent",
+      "Referer",
+      "stripe-signature",
+    ],
+    credentials: true,
+  })
+);
 
-app.use(cors(corsOptions)); // ← これでCORSが通る
-app.options("*", cors(corsOptions)); // ← プリフライトにも対応
+// プリフライトリクエストのための設定
+app.options("*", (req, res) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://salone-new-flower.vercel.app"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, sec-ch-ua, sec-ch-ua-mobile, sec-ch-ua-platform, User-Agent, Referer, stripe-signature"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.status(204).send();
+});
+
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
