@@ -1,3 +1,4 @@
+// @ts-nocheck
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -57,12 +58,53 @@ const transporter = nodemailer.createTransport({
 // Stripeチェックアウトセッション作成API
 app.post("/create-checkout-session", async (req, res) => {
   try {
+    console.log("リクエストボディ:", req.body); // リクエストの内容をログ出力
+
     const { name, email, phone, address, postalCode, city, product } = req.body;
+
+    // 必須パラメータのチェック
+    if (
+      !name ||
+      !email ||
+      !phone ||
+      !address ||
+      !postalCode ||
+      !city ||
+      !product
+    ) {
+      console.error("必須パラメータが不足しています:", {
+        name,
+        email,
+        phone,
+        address,
+        postalCode,
+        city,
+        product,
+      });
+      return res.status(400).json({ error: "必須パラメータが不足しています" });
+    }
 
     // 商品情報の取得
     const { id, name: productName, type, price, size } = product;
 
     // Stripeのチェックアウトセッションを作成
+    console.log("Stripeセッション作成開始:", {
+      email,
+      productName,
+      price,
+      metadata: {
+        customerName: name,
+        customerPhone: phone,
+        customerAddress: address,
+        customerPostalCode: postalCode,
+        customerCity: city,
+        productId: id,
+        productName,
+        productType: type,
+        productSize: size,
+      },
+    });
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -124,10 +166,19 @@ app.post("/create-checkout-session", async (req, res) => {
       },
     });
 
+    console.log("Stripeセッション作成成功:", session.id);
     res.status(200).json({ sessionId: session.id });
   } catch (error) {
     console.error("Stripeセッション作成エラー:", error);
-    res.status(500).json({ error: "決済セッションの作成に失敗しました" });
+    console.error("エラーの詳細:", {
+      message: error.message,
+      stack: error.stack,
+      raw: error,
+    });
+    res.status(500).json({
+      error: "決済セッションの作成に失敗しました",
+      details: error.message,
+    });
   }
 });
 
