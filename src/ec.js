@@ -13,7 +13,18 @@ const PORT = process.env.PORT || 3000;
 const corsOptions = {
   origin: "https://salone-new-flower.vercel.app", // フロントの開発URL
   methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type"],
+  allowedHeaders: [
+    "Content-Type",
+    "sec-ch-ua",
+    "sec-ch-ua-mobile",
+    "sec-ch-ua-platform",
+    "User-Agent",
+    "Referer",
+    "stripe-signature",
+  ],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions)); // ← これでCORSが通る
