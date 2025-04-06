@@ -8,6 +8,10 @@
     {
       "src": "src/reservation.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "src/ec.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -28,6 +32,15 @@
         "Access-Control-Allow-Headers": "Content-Type"
       },
       "dest": "src/reservation.js"
+    },
+    {
+      "src": "/send-purchase",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
+      "dest": "src/ec.js"
     }
   ]
 }

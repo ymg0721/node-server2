@@ -8,8 +8,16 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// CORS設定
+const corsOptions = {
+  origin: "https://salone-new-flower.vercel.app",
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+};
+
 // ミドルウェアの設定
-app.use(cors());
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
