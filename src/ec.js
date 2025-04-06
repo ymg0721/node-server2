@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 const path = require("path");
+const stripe = require("./config/stripe");
 require("dotenv").config();
 
 const app = express();
@@ -36,6 +37,83 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+});
+
+// Stripeチェックアウトセッション作成API
+app.post("/create-checkout-session", async (req, res) => {
+  try {
+    const { name, email, phone, address, postalCode, city, product } = req.body;
+
+    // 商品情報の取得
+    const { id, name: productName, type, price, size } = product;
+
+    // Stripeのチェックアウトセッションを作成
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "jpy",
+            product_data: {
+              name: productName,
+              description: `${type} - ${size}`,
+            },
+            unit_amount: price,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${
+        process.env.FRONTEND_URL || "https://salone-new-flower.vercel.app"
+      }/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${
+        process.env.FRONTEND_URL || "https://salone-new-flower.vercel.app"
+      }/cancel`,
+      customer_email: email,
+      shipping_address_collection: {
+        allowed_countries: ["JP"],
+      },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: {
+              amount: 0,
+              currency: "jpy",
+            },
+            display_name: "通常配送",
+            delivery_estimate: {
+              minimum: {
+                unit: "business_day",
+                value: 3,
+              },
+              maximum: {
+                unit: "business_day",
+                value: 5,
+              },
+            },
+          },
+        },
+      ],
+      metadata: {
+        customerName: name,
+        customerPhone: phone,
+        customerAddress: address,
+        customerPostalCode: postalCode,
+        customerCity: city,
+        productId: id,
+        productName: productName,
+        productType: type,
+        productSize: size,
+      },
+    });
+
+    res.status(200).json({ sessionId: session.id });
+  } catch (error) {
+    console.error("Stripeセッション作成エラー:", error);
+    res.status(500).json({ error: "決済セッションの作成に失敗しました" });
+  }
 });
 
 // 購入処理API
@@ -206,6 +284,115 @@ app.post("/send-reservation", async (req, res) => {
       .status(500)
       .json({ success: false, message: "予約処理中にエラーが発生しました" });
   }
+});
+
+// Stripe Webhook処理API
+app.post("/webhook", (req, res, next) => {
+  const sig = req.headers["stripe-signature"];
+  const endpointSecret =
+    process.env.STRIPE_WEBHOOK_SECRET || "whsec_your_webhook_secret";
+
+  // 生のリクエストボディを取得
+  let rawBody = "";
+  req.setEncoding("utf8");
+  req.on("data", (chunk) => {
+    rawBody += chunk;
+  });
+
+  req.on("end", async () => {
+    try {
+      const event = stripe.webhooks.constructEvent(
+        rawBody,
+        sig,
+        endpointSecret
+      );
+
+      // イベントタイプに応じた処理
+      switch (event.type) {
+        case "checkout.session.completed":
+          const session = event.data.object;
+
+          // メタデータから顧客情報と商品情報を取得
+          const {
+            customerName,
+            customerPhone,
+            customerAddress,
+            customerPostalCode,
+            customerCity,
+            productName,
+            productType,
+            productSize,
+          } = session.metadata;
+
+          // 購入確認メールの送信
+          const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: session.customer_email,
+            subject: "【購入完了】ご注文ありがとうございます",
+            html: `
+            <h2>ご購入ありがとうございます</h2>
+            <p>${customerName} 様</p>
+            <p>ご注文いただいた商品は、ご登録いただいた住所へお届けいたします。</p>
+            
+            <h3>商品情報</h3>
+            <p>商品名: ${productName} (${productType})</p>
+            <p>サイズ: ${productSize}</p>
+            <p>お支払い金額: ¥${session.amount_total.toLocaleString()}</p>
+            
+            <h3>お届け先情報</h3>
+            <p>〒${customerPostalCode}</p>
+            <p>${customerCity} ${customerAddress}</p>
+            <p>TEL: ${customerPhone}</p>
+            
+            <p>ご購入ありがとうございました。</p>
+          `,
+          };
+
+          try {
+            await transporter.sendMail(mailOptions);
+
+            // 管理者への通知メール
+            const adminMailOptions = {
+              from: process.env.EMAIL_USER,
+              to: process.env.ADMIN_EMAIL,
+              subject: "【新規購入】新しい注文がありました",
+              html: `
+              <h2>新規購入通知</h2>
+              <p>新しい注文がありました。</p>
+              
+              <h3>お客様情報</h3>
+              <p>お名前: ${customerName}</p>
+              <p>メールアドレス: ${session.customer_email}</p>
+              <p>電話番号: ${customerPhone}</p>
+              <p>郵便番号: ${customerPostalCode}</p>
+              <p>住所: ${customerCity} ${customerAddress}</p>
+              
+              <h3>商品情報</h3>
+              <p>商品名: ${productName} (${productType})</p>
+              <p>サイズ: ${productSize}</p>
+              <p>お支払い金額: ¥${session.amount_total.toLocaleString()}</p>
+              
+              <h3>決済情報</h3>
+              <p>決済ID: ${session.payment_intent}</p>
+              <p>決済方法: クレジットカード</p>
+            `,
+            };
+
+            await transporter.sendMail(adminMailOptions);
+          } catch (error) {
+            console.error("メール送信エラー:", error);
+          }
+          break;
+        default:
+          console.log(`未処理のイベントタイプ: ${event.type}`);
+      }
+
+      res.json({ received: true });
+    } catch (err) {
+      console.error(`Webhookエラー: ${err.message}`);
+      res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+  });
 });
 
 // カード番号をマスクする関数
