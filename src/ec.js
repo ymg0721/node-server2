@@ -11,25 +11,13 @@ const PORT = process.env.PORT || 3000;
 
 // CORS設定
 const corsOptions = {
-  origin: "https://salone-new-flower.vercel.app",
+  origin: "https://salone-new-flower.vercel.app", // フロントの開発URL
   methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "sec-ch-ua",
-    "sec-ch-ua-mobile",
-    "sec-ch-ua-platform",
-    "User-Agent",
-    "Referer",
-    "stripe-signature",
-  ],
-  credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
+  allowedHeaders: ["Content-Type"],
 };
 
-// ミドルウェアの設定
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.use(cors(corsOptions)); // ← これでCORSが通る
+app.options("*", cors(corsOptions)); // ← プリフライトにも対応
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
