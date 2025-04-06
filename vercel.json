@@ -39,9 +39,10 @@
       "headers": {
         "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type, sec-ch-ua, sec-ch-ua-mobile, sec-ch-ua-platform, User-Agent, Referer, stripe-signature",
+        "Access-Control-Allow-Credentials": "true"
       },
-      "dest": "src/ec.js"
+      "status": 204
     },
     {
       "src": "/create-checkout-session",
@@ -49,7 +50,8 @@
       "headers": {
         "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type, sec-ch-ua, sec-ch-ua-mobile, sec-ch-ua-platform, User-Agent, Referer, stripe-signature",
+        "Access-Control-Allow-Credentials": "true"
       },
       "dest": "src/ec.js"
     }
