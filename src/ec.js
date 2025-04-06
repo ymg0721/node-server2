@@ -20,8 +20,11 @@ const corsOptions = {
     "sec-ch-ua-platform",
     "User-Agent",
     "Referer",
+    "stripe-signature",
   ],
   credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
 };
 
 // ミドルウェアの設定
