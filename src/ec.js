@@ -12,7 +12,15 @@ const PORT = process.env.PORT || 3000;
 const corsOptions = {
   origin: "https://salone-new-flower.vercel.app",
   methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type"],
+  allowedHeaders: [
+    "Content-Type",
+    "sec-ch-ua",
+    "sec-ch-ua-mobile",
+    "sec-ch-ua-platform",
+    "User-Agent",
+    "Referer",
+  ],
+  credentials: true,
 };
 
 // ミドルウェアの設定
