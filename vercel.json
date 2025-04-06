@@ -39,10 +39,9 @@
       "headers": {
         "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, sec-ch-ua, sec-ch-ua-mobile, sec-ch-ua-platform, User-Agent, Referer, stripe-signature",
-        "Access-Control-Allow-Credentials": "true"
+        "Access-Control-Allow-Headers": "Content-Type"
       },
-      "status": 204
+      "dest": "src/ec.js"
     },
     {
       "src": "/create-checkout-session",
@@ -50,30 +49,7 @@
       "headers": {
         "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, sec-ch-ua, sec-ch-ua-mobile, sec-ch-ua-platform, User-Agent, Referer, stripe-signature",
-        "Access-Control-Allow-Credentials": "true"
-      },
-      "dest": "src/ec.js"
-    },
-    {
-      "src": "/(.*)",
-      "methods": ["OPTIONS"],
-      "headers": {
-        "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, sec-ch-ua, sec-ch-ua-mobile, sec-ch-ua-platform, User-Agent, Referer, stripe-signature",
-        "Access-Control-Allow-Credentials": "true"
-      },
-      "status": 204
-    },
-    {
-      "src": "/(.*)",
-      "methods": ["GET", "POST"],
-      "headers": {
-        "Access-Control-Allow-Origin": "https://salone-new-flower.vercel.app",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, sec-ch-ua, sec-ch-ua-mobile, sec-ch-ua-platform, User-Agent, Referer, stripe-signature",
-        "Access-Control-Allow-Credentials": "true"
+        "Access-Control-Allow-Headers": "Content-Type"
       },
       "dest": "src/ec.js"
     }
