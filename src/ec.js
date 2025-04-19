@@ -13,7 +13,10 @@ const PORT = process.env.PORT || 3000;
 // CORS設定
 app.use(
   cors({
-    origin: "https://salone-new-flower.vercel.app",
+    origin: [
+      "https://salone-new-flower.vercel.app",
+      "https://www.venere-emi-flower.com",
+    ],
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
@@ -30,10 +33,15 @@ app.use(
 
 // プリフライトリクエストのための設定
 app.options("*", (req, res) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://salone-new-flower.vercel.app"
-  );
+  const allowedOrigins = [
+    "https://salone-new-flower.vercel.app",
+    "https://www.venere-emi-flower.com",
+  ];
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",

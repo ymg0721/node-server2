@@ -12,7 +12,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 const corsOptions = {
-  origin: "https://salone-new-flower.vercel.app", // フロントの開発URL
+  origin: [
+    "https://salone-new-flower.vercel.app",
+    "https://www.venere-emi-flower.com",
+  ],
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"],
 };

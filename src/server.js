@@ -10,7 +10,10 @@ const PORT = process.env.PORT || 3001;
 
 // ✅ CORS設定（ローカル用）ここが重要！
 const corsOptions = {
-  origin: "https://salone-new-flower.vercel.app", // フロントの開発URL
+  origin: [
+    "https://salone-new-flower.vercel.app",
+    "https://www.venere-emi-flower.com",
+  ],
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"],
 };
